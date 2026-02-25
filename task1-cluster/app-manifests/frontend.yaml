@@ -23,6 +23,8 @@ spec:
       labels:
         app: frontend-web
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: frontend
           image: ghcr.io/bluebird3894/dodo-frontend:latest # CI/CD will update this
