@@ -2,9 +2,7 @@ name: Dodo Payments CI
 
 on:
   push:
-    branches: [ "main" ]
-    paths:
-      - 'task2-cicd/**'
+    branches: [ "main" ]    
   pull_request:
     branches: [ "main" ]
 
