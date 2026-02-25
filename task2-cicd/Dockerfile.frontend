@@ -1,0 +1,41 @@
+# ------------------------------------------------------------------------------
+# Stage 1: Builder
+# ------------------------------------------------------------------------------
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+
+# Build the static frontend assets
+RUN npm run build
+
+# ------------------------------------------------------------------------------
+# Stage 2: Production Server
+# ------------------------------------------------------------------------------
+# Security: Using an officially maintained unprivileged NGINX image
+FROM nginxinc/nginx-unprivileged:alpine
+
+# Switch to root temporarily to configure permissions and clean up
+USER root
+
+# Remove default NGINX static assets to reduce attack surface
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy the compiled static assets from the builder stage
+# (Change /app/build to /app/dist or /app/out depending on your frontend framework)
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# Ensure the unprivileged NGINX user owns the served files
+RUN chown -R nginx:nginx /usr/share/nginx/html
+
+# Switch back to the unprivileged user
+USER nginx
+
+# NGINX unprivileged uses port 8080 by default internally to avoid needing root
+EXPOSE 8080
+
+CMD ["nginx", "-g", "daemon off;"]

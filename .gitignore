@@ -1,0 +1,45 @@
+# ------------------------------------------------------------------------------
+# Terraform
+# ------------------------------------------------------------------------------
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl
+
+# ------------------------------------------------------------------------------
+# Node.js (Frontend/Backend builds)
+# ------------------------------------------------------------------------------
+node_modules/
+npm-debug.log
+yarn-error.log
+build/
+dist/
+.env
+
+# ------------------------------------------------------------------------------
+# Kubernetes / Security / Credentials
+# ------------------------------------------------------------------------------
+kubeconfig
+*.pem
+*.key
+*.cert
+*.crt
+# Ignore local secrets files if you test locally
+*secret*.yaml 
+!k8s-base/secrets.yaml # Unless it's a template you specifically want to commit
+
+# ------------------------------------------------------------------------------
+# OS / IDE
+# ------------------------------------------------------------------------------
+.DS_Store
+.vscode/
+.idea/
+*.swp
