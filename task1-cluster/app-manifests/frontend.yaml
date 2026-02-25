@@ -26,8 +26,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: frontend
-          # CHANGED: Using the direct image name that matches your build logs
-          image: ghcr.io/bluebird3894/dodo-frontend:latest
+          image: ghcr.io/bluebird3894/dodo-payments-assignment/dodo-frontend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
