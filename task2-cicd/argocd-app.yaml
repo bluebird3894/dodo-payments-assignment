@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/YOUR_GITHUB_USERNAME/dodo-payments-assignment.git' # Update this
+    repoURL: 'https://github.com/bluebird3894/dodo-payments-assignment.git'
     targetRevision: main
     path: task1-cluster/app-manifests
   destination:
