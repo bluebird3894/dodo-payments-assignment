@@ -33,6 +33,11 @@ spec:
       labels:
         app: backend-api
     spec:
+      # This enforces non-root at the Pod level
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
       # Use the secret you created in the terminal to pull the image
       imagePullSecrets:
         - name: ghcr-secret
