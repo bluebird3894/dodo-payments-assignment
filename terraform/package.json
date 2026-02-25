@@ -1,0 +1,10 @@
+{
+  "name": "dodo-mock-app",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "mkdir build && echo \"<h1>Dodo Payments Frontend</h1>\" > build/index.html"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
