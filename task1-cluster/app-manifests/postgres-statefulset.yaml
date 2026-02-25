@@ -79,6 +79,8 @@ spec:
                 - pg_isready
                 - -U
                 - dodoadmin
+                - -d
+                - dodopayments # ADD THIS: Point to the actual DB name
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
@@ -87,6 +89,8 @@ spec:
                 - pg_isready
                 - -U
                 - dodoadmin
+                - -d
+                - dodopayments # ADD THIS: Point to the actual DB name
             initialDelaySeconds: 5
             periodSeconds: 5
           volumeMounts:
