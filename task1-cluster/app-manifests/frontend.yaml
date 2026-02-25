@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ghcr.io/your-github-username/dodo-frontend:latest # CI/CD will update this
+          image: ghcr.io/bluebird3894/dodo-frontend:latest # CI/CD will update this
           imagePullPolicy: Always
           ports:
             - containerPort: 80

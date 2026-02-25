@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ghcr.io/your-github-username/dodo-backend:latest # CI/CD will update this
+          image: ghcr.io/bluebird3894/dodo-backend:latest # CI/CD will update this
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
