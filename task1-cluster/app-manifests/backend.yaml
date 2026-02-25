@@ -6,7 +6,7 @@ metadata:
 data:
   NODE_ENV: "production"
   PORT: "8080"
-  DB_HOST: "postgres-0.postgres.default.svc.cluster.local" # Points to the StatefulSet we'll build next
+  DB_HOST: "postgres-0.postgres.default.svc.cluster.local"
 ---
 apiVersion: v1
 kind: Secret
@@ -14,7 +14,6 @@ metadata:
   name: backend-secrets
 type: Opaque
 stringData:
-  # In a real scenario, this would be encrypted via SealedSecrets (Task 4)
   DB_USER: "dodoadmin"
   DB_PASSWORD: "SuperSecretPassword123!"
 ---
@@ -34,11 +33,12 @@ spec:
       labels:
         app: backend-api
     spec:
+      # Use the secret you created in the terminal to pull the image
       imagePullSecrets:
         - name: ghcr-secret
       containers:
         - name: backend
-          image: ghcr.io/bluebird3894/dodo-backend:latest # CI/CD will update this
+          image: ghcr.io/bluebird3894/dodo-payments-assignment/dodo-backend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -56,13 +56,13 @@ spec:
               memory: "256Mi"
           livenessProbe:
             httpGet:
-              path: /health
+              path: /
               port: 8080
             initialDelaySeconds: 15
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /ready
+              path: /
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 5
@@ -78,22 +78,3 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 8080
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: backend-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: backend-api
-  minReplicas: 2
-  maxReplicas: 5
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 75

@@ -4,7 +4,6 @@ kind: ConfigMap
 metadata:
   name: frontend-config
 data:
-  # Internal DNS routing to the backend service
   NEXT_PUBLIC_API_URL: "http://backend-service.default.svc.cluster.local"
 ---
 apiVersion: apps/v1
@@ -23,14 +22,15 @@ spec:
       labels:
         app: frontend-web
     spec:
+      # Added to allow pulling from private GitHub Registry
       imagePullSecrets:
         - name: ghcr-secret
       containers:
         - name: frontend
-          image: ghcr.io/bluebird3894/dodo-frontend:latest # CI/CD will update this
+          image: ghcr.io/bluebird3894/dodo-payments-assignment/dodo-frontend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 80
+            - containerPort: 8080 # Updated to match unprivileged NGINX port
           envFrom:
             - configMapRef:
                 name: frontend-config
@@ -44,13 +44,13 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: 80
+              port: 8080
             initialDelaySeconds: 10
             periodSeconds: 15
           readinessProbe:
             httpGet:
               path: /
-              port: 80
+              port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
 ---
@@ -64,23 +64,4 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: frontend-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: frontend-web
-  minReplicas: 2
-  maxReplicas: 4
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 80
+      targetPort: 8080
