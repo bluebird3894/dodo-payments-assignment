@@ -92,6 +92,7 @@ spec:
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
+              subPath: postgres-db-data
   # Persistent Volume Claim Template (Bonus requirement)
   volumeClaimTemplates:
     - metadata:
