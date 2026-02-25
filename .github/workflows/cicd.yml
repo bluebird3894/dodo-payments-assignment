@@ -1,43 +1,4 @@
-name: Dodo Payments CI
-
-on:
-  push:
-    branches: [ "main" ]    
-  pull_request:
-    branches: [ "main" ]
-
-env:
-  REGISTRY: ghcr.io
-  FRONTEND_IMAGE: ${{ github.repository }}/dodo-frontend
-  BACKEND_IMAGE: ${{ github.repository }}/dodo-backend
-
-jobs:
-  lint-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          
-      - name: Run Linting & Unit Tests
-        run: |
-          echo "Running static code analysis and linting..."
-          # npm run lint
-          echo "Running unit and integration tests..."
-          # npm test
-          echo "Tests passed!"
-
-  security-scan-and-build:
-    needs: lint-and-test
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    
-    steps:
+steps:
       - uses: actions/checkout@v4
 
       - name: Log in to the Container registry
@@ -47,18 +8,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # --- BACKEND SECTION ---
       - name: Build Backend Image
         run: docker build -t ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ github.sha }} -f task2-cicd/Dockerfile.backend .
 
-      # Bonus Task: Security scanning with Trivy
-      - name: Run Trivy vulnerability scanner
+      - name: Run Trivy Backend Scan
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: '${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ github.sha }}'
           format: 'table'
-          exit-code: '0' # Fails the pipeline if CRITICAL vulnerabilities are found
-          ignore-unfixed: true
-          vuln-type: 'os,library'
+          exit-code: '0'
           severity: 'CRITICAL,HIGH'
 
       - name: Push Backend Image
@@ -67,3 +26,22 @@ jobs:
           docker push ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ github.sha }}
           docker tag ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest
           docker push ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest
+
+      # --- FRONTEND SECTION (ADD THIS) ---
+      - name: Build Frontend Image
+        run: docker build -t ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ github.sha }} -f task2-cicd/Dockerfile.frontend .
+
+      - name: Run Trivy Frontend Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ github.sha }}'
+          format: 'table'
+          exit-code: '0'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Push Frontend Image
+        if: success()
+        run: |
+          docker push ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+          docker tag ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
+          docker push ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
