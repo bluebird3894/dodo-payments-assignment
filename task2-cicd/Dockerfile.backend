@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install all dependencies (including dev dependencies for testing/linting in CI)
-RUN npm ci
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
