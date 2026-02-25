@@ -38,7 +38,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: backend
-          image: ghcr.io/bluebird3894/dodo-payments-assignment/dodo-backend:latest
+          image: ghcr.io/bluebird3894/dodo-payments-assignment/dodo-backend:ecf5698a770a58a07d596f19f59dae13e0704697
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
