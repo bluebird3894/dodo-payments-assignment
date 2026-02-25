@@ -4,6 +4,7 @@ kind: ConfigMap
 metadata:
   name: frontend-config
 data:
+  # This points the frontend to the backend service internally
   NEXT_PUBLIC_API_URL: "http://backend-service.default.svc.cluster.local"
 ---
 apiVersion: apps/v1
@@ -26,8 +27,8 @@ spec:
         - name: ghcr-secret
       containers:
         - name: frontend
-          # Fixed the image path to match your registry
-          image: ghcr.io/bluebird3894/dodo-frontend:latest
+          # UPDATED IMAGE PATH: Aligning with the working backend naming convention
+          image: ghcr.io/bluebird3894/dodo-payments-assignment-frontend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -45,13 +46,13 @@ spec:
             httpGet:
               path: /
               port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 15
+            initialDelaySeconds: 15
+            periodSeconds: 20
           readinessProbe:
             httpGet:
               path: /
               port: 8080
-            initialDelaySeconds: 5
+            initialDelaySeconds: 10
             periodSeconds: 10
 ---
 apiVersion: v1
