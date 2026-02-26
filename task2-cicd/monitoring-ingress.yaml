@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: dodo-payments-ingress
-  namespace: default
+  name: monitoring-ingress
+  namespace: monitoring
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
@@ -11,25 +11,18 @@ metadata:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:374364498316:certificate/603e4b59-fe7e-4225-8403-747b31e0702e
     alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/healthcheck-path: /api/health
+    alb.ingress.kubernetes.io/healthcheck-port: '3000'
+    alb.ingress.kubernetes.io/healthcheck-success-codes: '200,302'
 spec:
   rules:
-    - host: app.urtechmitra.link
+    - host: grafana.urtechmitra.link
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: frontend-service
-                port:
-                  number: 80
-    - host: api.urtechmitra.link
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: backend-service
+                name: prometheus-stack-grafana
                 port:
                   number: 80
