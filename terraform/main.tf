@@ -23,7 +23,7 @@ module "vpc" {
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24"]
 
   enable_nat_gateway   = true
-  single_nat_gateway   = true # Crucial for cost optimization (<$1/day NAT cost vs $3/day)
+  single_nat_gateway   = true
   enable_dns_hostnames = true
 
   # Tags required by AWS EKS and Kubernetes to discover subnets for LBs
@@ -63,7 +63,7 @@ module "eks" {
       desired_size = 2
 
       instance_types = ["t3a.medium"]
-      capacity_type  = "SPOT" # Leverages unused EC2 capacity at steep discounts
+      capacity_type  = "SPOT"
 
       labels = {
         role = "worker"

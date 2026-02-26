@@ -5,7 +5,7 @@ metadata:
   name: postgres-secret
 type: Opaque
 stringData:
-  # In a production environment, use external secret management (Task 4)
+  # In a production environment, we use external secret management but can be ignored for this assignment.
   POSTGRES_USER: "dodoadmin"
   POSTGRES_PASSWORD: "SuperSecretPassword123!"
   POSTGRES_DB: "dodopayments"
@@ -64,7 +64,7 @@ spec:
           envFrom:
             - secretRef:
                 name: postgres-secret
-          # Resource requests and limits (Task 1 requirement)
+          # Resource requests and limits
           resources:
             requests:
               cpu: "200m"
@@ -72,7 +72,7 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
-          # Health checks (Task 1 requirement)
+          # Health checks
           livenessProbe:
             exec:
               command:
@@ -80,7 +80,7 @@ spec:
                 - -U
                 - dodoadmin
                 - -d
-                - dodopayments # ADD THIS: Point to the actual DB name
+                - dodopayments
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
@@ -90,14 +90,14 @@ spec:
                 - -U
                 - dodoadmin
                 - -d
-                - dodopayments # ADD THIS: Point to the actual DB name
+                - dodopayments
             initialDelaySeconds: 5
             periodSeconds: 5
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
               subPath: postgres-db-data
-  # Persistent Volume Claim Template (Bonus requirement)
+  # Persistent Volume Claim Template
   volumeClaimTemplates:
     - metadata:
         name: postgres-data

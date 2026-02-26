@@ -38,7 +38,7 @@ spec:
         runAsNonRoot: true
         runAsUser: 1000
         fsGroup: 2000
-      # Use the secret you created in the terminal to pull the image
+      # Using the secret created in the terminal to pull the image from GitHub Container Registry
       imagePullSecrets:
         - name: ghcr-secret
       containers:

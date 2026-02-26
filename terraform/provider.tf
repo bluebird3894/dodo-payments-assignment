@@ -19,8 +19,5 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region
-
-  # Optional: If you use a specific AWS CLI profile, uncomment the line below
-  # profile = "default" 
+  region = var.aws_region 
 }

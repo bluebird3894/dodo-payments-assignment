@@ -5,12 +5,11 @@ metadata:
   name: dodo-app-ingress
   annotations:
     # Assuming standard NGINX ingress controller for Task 1
-    # Note: In Task 5, you'll discuss how Istio replaces this with an Istio Gateway
-    kubernetes.io/ingress.class: "nginx"
+        kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   rules:
-    - host: dodo-payments.local # You can map this in your local /etc/hosts file to your Load Balancer IP
+    - host: dodo-payments.local
       http:
         paths:
           - path: /
